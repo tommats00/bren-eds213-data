@@ -9,7 +9,16 @@ CREATE TEMP TABLE Averages AS
     GROUP BY Nest_ID;
 
 -- Join the table with Bird_nests, so we can group by species, and join with species
-SELECT Species, MAX(Avg_volume) AS Avg_volume
-    FROM Bird_nests JOIN Averages USING (Nest_ID)
-    GROUP BY Species;
+-- Create temp table to join in next step
+CREATE TEMP TABLE Max_mean_volume AS
+    SELECT Species, MAX(Avg_volume) AS Max_avg_volume
+        FROM Bird_nests JOIN Averages USING (Nest_ID)
+        GROUP BY Species
+        ORDER BY Max_avg_volume DESC;
 
+-- Join Species and temp table for final output
+SELECT Scientific_name, Max_avg_volume 
+    FROM Species 
+    JOIN Max_mean_volume 
+    ON Species.Code = Max_mean_volume.Species
+    ORDER BY Max_avg_volume DESC;
