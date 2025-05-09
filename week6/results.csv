@@ -1,0 +1,12 @@
+subquery,10,2,0.2
+outer_join,10,1,0.1
+except,10,1,0.1
+subquery,50,6,0.12
+outer_join,50,6,0.12
+except,50,6,0.12
+subquery,100,11,0.11
+outer_join,100,11,0.11
+except,100,12,0.12
+subquery,1000,113,0.113
+outer_join,1000,109,0.109
+except,1000,116,0.116
