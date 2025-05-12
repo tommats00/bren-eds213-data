@@ -1,0 +1,86 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+library(DBI) 
+library(tidyverse)
+library(duckdb)
+```
+
+
+```{r}
+conn <- DBI::dbConnect(duckdb::duckdb(), dbdir='database/database.db')
+```
+
+```{r}
+DBI::dbListTables(conn)
+```
+
+```{r}
+species <- tbl(conn, "Species")
+species
+```
+
+## Let's do our first query
+```{r}
+species_a <- dbGetQuery(conn, "SELECT * FROM SPECIES WHERE Code LIKE '%a'")
+species_a
+```
+### There is a better way
+```{r}
+library(dbplyr)
+```
+```{r}
+species %>% 
+  filter(Relevance == "Study species") %>% 
+  select(Code, Scientific_name) %>% 
+  show_query()
+```
+
+```{r}
+species_study <- species %>% 
+  filter(Relevance == "Study species") %>% 
+  select(Code, Scientific_name)
+```
+
+```{r}
+class(species_study)
+dim(species_study)
+```
+### Can I group
+```{r}
+species %>% 
+  group_by(Relevance) %>% 
+  summarize(num_species = n()) %>% 
+  show_query()
+```
+### You can also mutate
+```{r}
+species %>% 
+  mutate(Code_x = paste0("X", Code)) %>% 
+  show_query()
+```
+## How do we get the full data?
+```{r}
+Species_X <- species %>% 
+  mutate(Code_x = paste0("X", Code)) %>% 
+  collect()
+```
+
+## You can do joins!!
+```{r}
+eggs_db <- tbl(conn, "Bird_eggs")
+nests_db <- tbl(conn, "Bird_nests")
+```
+```{r}
+nest_eggs_df <- left_join(nests_db, eggs_db, by = "Nest_ID", keep = FALSE) %>% 
+  collect()
+```
+### Don't forget to close the database connection
+```{r}
+DBI::dbDisconnect(conn, shutdown = TRUE)
+```
+
