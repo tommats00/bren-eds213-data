@@ -1,0 +1,55 @@
+---
+title: "Who were the winners?"
+author: "Tom Gibbens-Matsuyama"
+format: html
+editor: visual
+---
+
+#### Problem:
+At the conclusion of the ASDN project the PIs decided to hand out first, second, and third prizes to the observers who measured the most eggs. Who won? Please use R and dbplyr to answer this question, and please submit your R code. Your code should print out:
+
+#### Load libraries
+```{r}
+library(DBI) 
+library(tidyverse)
+library(duckdb)
+library(dbplyr)
+```
+
+#### Connect to the database
+```{r}
+# Connect to database
+conn <- DBI::dbConnect(duckdb::duckdb(), dbdir='database/database.db')
+
+# List tables 
+DBI::dbListTables(conn)
+
+# Read in specific tables
+egg_table <- tbl(conn, 'Bird_eggs')
+personnel <- tbl(conn, "Personnel")
+bird_nests <- tbl(conn, "Bird_nests")
+
+```
+
+```{r}
+
+# Calculate total eggs per observer
+total_eggs <- inner_join(egg_table, bird_nests, by = "Nest_ID") %>% 
+  inner_join(personnel, by = c("Observer" = "Abbreviation")) %>% 
+  group_by(Name) %>% 
+  summarize(total_eggs = count(Egg_num)) %>% 
+  slice_max(order_by = total_eggs, n = 3) %>% 
+  arrange(desc(total_eggs))
+```
+
+#### Show Query
+```{r}
+# Query of the code above
+inner_join(egg_table, bird_nests, by = "Nest_ID") %>% 
+  inner_join(personnel, by = c("Observer" = "Abbreviation")) %>% 
+  group_by(Name) %>% 
+  summarize(total_eggs = count(Egg_num)) %>% 
+  arrange(desc(total_eggs)) %>% 
+  show_query()
+```
+I did not have multiple R statements, therefore I did not create any temporary tables. It was all in one input. 
