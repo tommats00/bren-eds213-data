@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+data/*
+week10/big-fat.sqlite3*
