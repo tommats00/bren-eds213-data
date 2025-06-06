@@ -1,0 +1,16 @@
+label,avg_query_time,num_distinct_values
+"none",26.344,1
+"Site",8.756,16
+"Species",1.774,99
+"Year",2.393,66
+"Observer",0.856,269
+"ageMethod",62.903,3
+"Site,Species",0.309,1584
+"Site,Observer",0.377,4304
+"Species,Observer",0.175,26631
+"Year,Observer",0.198,17754
+"Observer,ageMethod",0.415,807
+"Site,Species,Observer",0.150,422204
+"Year,Observer,ageMethod",0.180,53262
+"Site,Species,ageMethod",0.247,4752
+"Site,Observer,ageMethod",0.215,12912
